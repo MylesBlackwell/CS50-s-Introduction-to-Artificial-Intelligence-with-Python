@@ -75,11 +75,23 @@ def main():
     else:
         degrees = len(path)
         print(f"{degrees} degrees of separation.")
-        path = [(None, source)] + path
+        print(path)
+        #path = [(None, source)] + path #I do not think I need this line it was throwing an error. It was causing an index error
         for i in range(degrees):
-            person1 = people[path[i][1]]["name"]
-            person2 = people[path[i + 1][1]]["name"]
-            movie = movies[path[i + 1][0]]["title"]
+            """"
+            I would added prints to help me debug but I think I have it working now
+            I am still getting a Type Error on line 94.
+            """
+
+            print(f"Debug: {path[0][i]}")
+            person1 = people[path[0][i]]["name"]
+            print(f"Debug: person1 is {person1}:{path[0][i]}") # Debugging line to check person1
+            print(f"Debug: {path[0][i +1]}")
+            person2 = people[path[0][i + 1]]["name"]
+            print(f"Debug: person2 is {person2}:{path[0][i + 1]}") # Debugging line to check person1
+            print(f"Debug: {[path[i + 1][1]]["title"]}")
+            movie = movies[path[i][1]]["title"]
+            print(f"Debug: movie is {movie}:{path[i + 1][0]['title']}") # Debugging line to check movie #This line is the current error
             print(f"{i + 1}: {person1} and {person2} starred in {movie}")
 
 def shortest_path(source, target):
@@ -98,13 +110,20 @@ def shortest_path(source, target):
     frontier = StackFrontier()
     frontier.add(start)
 
+    # Initializing a goal set
+    goal = Node(state=target, parent=None, action=None)
+
+    """
+    The conditon was not being found so I thought I could have been becuase it ws not in a node.
+    I think it was working and I not longer need this goal variable.
+    """
+
     # Initialize an empty explored set
     explored = set()
 
     # Keep looping until solution found
     while True:
 
-        print(start.state)
         # If nothing left in frontier, then no path
         if frontier.empty():
             raise Exception("no solution")
@@ -113,11 +132,12 @@ def shortest_path(source, target):
         node = frontier.remove()
         num_explored += 1
 
-        print(node.state)
-        print(num_explored)
+        print(f"Exploring Node {num_explored}: {node.state}") # Lets me know what node is being explored
+
+        print(f"Testing if {node.state} is the goal: {goal.state}") # Lets me know what is being tested
         # If node is the goal, then we have a solution
         if node.state == target:
-            print("Found Target")
+            print(f"Goal {goal.state} found!") # Lets me know when the goal is found
             actions = []
             cells = []
             while node.parent is not None:
@@ -126,18 +146,20 @@ def shortest_path(source, target):
                 node = node.parent
             actions.reverse()
             cells.reverse()
-            solution = (actions, cells)
-            return
+            solution = (cells, actions) # I filped this to make it easier to navigate
+            return solution
 
-        print("node not target")
         # Mark node as explored
         explored.add(node.state)
 
         # Add neighbors to frontier
+        neighbors_added = 0 # Helps me keep track of how many neighbors are added
         for action, state in neighbors_for_person(node.state):
+            neighbors_added += 1
             if not frontier.contains_state(state) and state not in explored:
                 child = Node(state=state, parent=node, action=action)
                 frontier.add(child)
+                print(f"Neighbor number {neighbors_added} added: {state}") # Lets me know what neighbors are being added
 
     # TODO
     raise NotImplementedError

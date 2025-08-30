@@ -1,6 +1,7 @@
 class Node():
     def __init__(self, state, parent, action):
         self.state = state
+        print(f"Node created: {state}") #Lets me know what has been created
         self.parent = parent
         self.action = action
 
@@ -10,6 +11,7 @@ class StackFrontier():
         self.frontier = []
 
     def add(self, node):
+        print(f"Node added to frontier: {node.state}") # Lets me know what is being added to the frontier
         self.frontier.append(node)
 
     def contains_state(self, state):
