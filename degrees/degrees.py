@@ -78,20 +78,13 @@ def main():
         print(path)
         #path = [(None, source)] + path #I do not think I need this line it was throwing an error. It was causing an index error
         for i in range(degrees):
-            """"
-            I would added prints to help me debug but I think I have it working now
-            I am still getting a Type Error on line 94.
-            """
-
-            print(f"Debug: {path[0][i]}")
-            person1 = people[path[0][i]]["name"]
-            print(f"Debug: person1 is {person1}:{path[0][i]}") # Debugging line to check person1
-            print(f"Debug: {path[0][i +1]}")
-            person2 = people[path[0][i + 1]]["name"]
-            print(f"Debug: person2 is {person2}:{path[0][i + 1]}") # Debugging line to check person1
-            print(f"Debug: {[path[i + 1][1]]["title"]}")
-            movie = movies[path[i][1]]["title"]
-            print(f"Debug: movie is {movie}:{path[i + 1][0]['title']}") # Debugging line to check movie #This line is the current error
+            
+            #I would added prints to help me debug but I think I have it working now
+            print(f"0 = {path[1]}") # To see what the options are
+            print(f"1 = {path[0]}")
+            person1 = people[path[1][i]]["name"] # I had to fip the index. The first selction of which part of the tuple. 
+            person2 = people[path[1][i + 1]]["name"]
+            movie = movies[path[0][i + 1]]["title"]
             print(f"{i + 1}: {person1} and {person2} starred in {movie}")
 
 def shortest_path(source, target):
@@ -146,7 +139,7 @@ def shortest_path(source, target):
                 node = node.parent
             actions.reverse()
             cells.reverse()
-            solution = (cells, actions) # I filped this to make it easier to navigate
+            solution = (actions, cells)
             return solution
 
         # Mark node as explored
