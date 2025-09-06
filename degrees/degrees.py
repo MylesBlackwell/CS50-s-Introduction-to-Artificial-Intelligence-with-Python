@@ -70,19 +70,16 @@ def main():
 
     path = shortest_path(source, target)
 
+    #prevents error if no path
     if path is None:
         print("Not connected.")
     else:
+        #overall output
         degrees = len(path)
         print(f"{degrees} degrees of separation.")
         print(path)
-        #path = [(None, source)] + path #I do not think I need this line it was throwing an error. It was causing an index error
         for i in range(degrees):
-            
-            #I would added prints to help me debug but I think I have it working now
-            print(f"0 = {path[1]}") # To see what the options are
-            print(f"1 = {path[0]}")
-            person1 = people[path[1][i]]["name"] # I had to fip the index. The first selction of which part of the tuple. 
+            person1 = people[path[1][i]]["name"]
             person2 = people[path[1][i + 1]]["name"]
             movie = movies[path[0][i + 1]]["title"]
             print(f"{i + 1}: {person1} and {person2} starred in {movie}")
@@ -100,7 +97,7 @@ def shortest_path(source, target):
 
     # Initialize frontier to just the starting position
     start = Node(state=source, parent=None, action=None)
-    frontier = StackFrontier()
+    frontier = QueueFrontier()
     frontier.add(start)
 
     # Initializing a goal set
@@ -119,18 +116,15 @@ def shortest_path(source, target):
 
         # If nothing left in frontier, then no path
         if frontier.empty():
-            raise Exception("no solution")
+            #raise Exception("no solution")
+            return None
 
         # Choose a node from the frontier
         node = frontier.remove()
         num_explored += 1
 
-        print(f"Exploring Node {num_explored}: {node.state}") # Lets me know what node is being explored
-
-        print(f"Testing if {node.state} is the goal: {goal.state}") # Lets me know what is being tested
         # If node is the goal, then we have a solution
         if node.state == target:
-            print(f"Goal {goal.state} found!") # Lets me know when the goal is found
             actions = []
             cells = []
             while node.parent is not None:
@@ -139,20 +133,21 @@ def shortest_path(source, target):
                 node = node.parent
             actions.reverse()
             cells.reverse()
+
+            #This was the error
             solution = (actions, cells)
-            return solution
+            actions, cells = solution
+            paired = list(zip(actions, cells)) # I the tupple incorrectly so I fixed it here
+            return paired
 
         # Mark node as explored
         explored.add(node.state)
 
         # Add neighbors to frontier
-        neighbors_added = 0 # Helps me keep track of how many neighbors are added
         for action, state in neighbors_for_person(node.state):
-            neighbors_added += 1
             if not frontier.contains_state(state) and state not in explored:
                 child = Node(state=state, parent=node, action=action)
                 frontier.add(child)
-                print(f"Neighbor number {neighbors_added} added: {state}") # Lets me know what neighbors are being added
 
     # TODO
     raise NotImplementedError
