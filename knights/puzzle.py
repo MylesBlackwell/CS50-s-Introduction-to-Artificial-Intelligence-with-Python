@@ -13,6 +13,10 @@ CKnave = Symbol("C is a Knave")
 # A says "I am both a knight and a knave."
 knowledge0 = And(
     # TODO
+    Or(AKnight, AKnave),
+    Implication(AKnight, Not(AKnave)),
+    Implication(AKnave, Not(AKnight)),
+    Biconditional(AKnight, And(AKnight, AKnave))
 )
 
 # Puzzle 1
@@ -20,6 +24,16 @@ knowledge0 = And(
 # B says nothing.
 knowledge1 = And(
     # TODO
+    Or(AKnight, AKnave),
+    Or(BKnight, BKnave),
+
+    Implication(AKnave, Not(AKnight)),
+    Implication(AKnight, Not(AKnave)),
+
+    Implication(BKnave, Not(BKnight)),
+    Implication(BKnight, Not(BKnave)),
+
+    Biconditional(AKnight, And(AKnave, BKnave))
 )
 
 # Puzzle 2
@@ -27,8 +41,19 @@ knowledge1 = And(
 # B says "We are of different kinds."
 knowledge2 = And(
     # TODO
-)
 
+    Or(AKnight, AKnave),
+    Or(BKnight, BKnave),
+
+    Implication(AKnave, Not(AKnight)),
+    Implication(AKnight, Not(AKnave)), 
+
+    Implication(BKnave, Not(BKnight)),
+    Implication(BKnight, Not(BKnave)),
+
+    Biconditional(AKnight, Or(And(AKnight, BKnight), And(AKnave, BKnave))), 
+    Biconditional(BKnight, Or(And(AKnight, BKnave), And(AKnave, BKnight))) 
+)
 # Puzzle 3
 # A says either "I am a knight." or "I am a knave.", but you don't know which.
 # B says "A said 'I am a knave'."
@@ -36,6 +61,27 @@ knowledge2 = And(
 # C says "A is a knight."
 knowledge3 = And(
     # TODO
+
+    Or(AKnight, AKnave),
+    Or(BKnight, BKnave),
+    Or(CKnight, CKnave),
+
+    Implication(AKnave, Not(AKnight)),
+    Implication(AKnight, Not(AKnave)),  
+
+    Implication(BKnave, Not(BKnight)),
+    Implication(BKnight, Not(BKnave)),
+
+    Implication(CKnave, Not(CKnight)),
+    Implication(CKnight, Not(CKnave)),
+
+    Or(
+        Biconditional(AKnight, AKnight), 
+        Biconditional(AKnight, AKnave)),
+
+    Biconditional(BKnight, Biconditional(AKnight, AKnave)),
+    Biconditional(BKnight, CKnave),
+    Biconditional(CKnight, AKnight)
 )
 
 
@@ -47,6 +93,7 @@ def main():
         ("Puzzle 2", knowledge2),
         ("Puzzle 3", knowledge3)
     ]
+
     for puzzle, knowledge in puzzles:
         print(puzzle)
         if len(knowledge.conjuncts) == 0:
